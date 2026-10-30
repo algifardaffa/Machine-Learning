@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>THE ML 101</title><meta name="theme-color" content="#0f172a"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.js"></script>
+<style>
+:root{--s50:#f8fafc;--s100:#f1f5f9;--s200:#e2e8f0;--s300:#cbd5e1;--s400:#94a3b8;--s500:#64748b;--s600:#475569;--s700:#334155;--s800:#1e293b;--s900:#0f172a;--i50:#eef2ff;--i300:#a5b4fc;--i400:#818cf8;--i500:#6366f1;--i600:#4f46e5;--i700:#4338ca}
+*{box-sizing:border-box}h1,h2,h3,p{margin:0}[hidden]{display:none!important}
+body{margin:0;padding-bottom:3rem;font:16px/1.5 'Inter',sans-serif;background:var(--s900);color:var(--s50)}
+.ico{width:1em;height:1em;display:inline-block;vertical-align:-.14em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:80rem;margin:0 auto;padding:2rem 1rem 0}@media(min-width:640px){.wrap{padding-left:1.5rem;padding-right:1.5rem}}@media(min-width:1024px){.wrap{padding-left:2rem;padding-right:2rem}}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;margin-bottom:1.5rem;border-bottom:1px solid rgba(30,41,59,.9);padding-bottom:1rem}
+.br{display:flex;align-items:center;gap:.75rem;min-width:0}.br img{width:2.75rem;height:2.75rem;flex:none;object-fit:contain;border-radius:.75rem}
+.bt{font-size:1rem;line-height:1.05;font-weight:800;letter-spacing:-.025em;color:#fff;white-space:nowrap}.bs{font-size:.75rem;line-height:1.15;font-weight:500;color:#94a3b8;white-space:nowrap}
+@media(min-width:640px){.bt{font-size:1.125rem}.bs{font-size:.875rem}}
+.ha{display:flex;align-items:center;justify-content:flex-end;gap:.5rem;margin-left:auto;position:relative}
+.hb{display:inline-flex;align-items:center;justify-content:center;min-width:42px;min-height:42px;padding:.5rem .75rem;border-radius:.75rem;border:1px solid rgba(51,65,85,.7);background:rgba(15,23,42,.8);color:var(--s300);font:600 .75rem Inter,sans-serif;cursor:pointer;transition:all .15s}
+.hb:hover{color:#fff}.hb[aria-expanded=true]{border-color:var(--s500);background:rgba(51,65,85,.9)}
+.mp{position:absolute;z-index:1000;right:0;top:calc(100% + 10px);width:min(260px,calc(100vw - 32px));padding:.5rem;border:1px solid rgba(100,116,139,.5);border-radius:1rem;background:var(--s900);box-shadow:0 16px 40px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:.25rem}
+.mi{display:flex;align-items:center;gap:.75rem;width:100%;text-align:left;padding:.75rem;border-radius:.75rem;color:var(--s200);font:600 .875rem Inter,sans-serif;background:transparent;border:0;cursor:pointer}
+.mi:hover,.mi:focus-visible,.mi.on{background:rgba(71,85,105,.5);outline:none}.mi span{width:1.25rem;display:inline-flex;justify-content:center;flex:none}
+.md{height:1px;background:rgba(100,116,139,.3);margin:.25rem .5rem}.ih{margin:0;padding:.25rem .75rem .5rem;font-size:.75rem;line-height:1.4;color:var(--s400)}.tab-section{display:none}.tab-section.active{display:block}.tab-section>*+*{margin-top:1.5rem}
+.pn{background:rgba(30,41,59,.6);border-radius:1rem;padding:1.5rem;border:1px solid rgba(51,65,85,.6);box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1)}
+.tt{display:flex;align-items:center;gap:.5rem;padding-bottom:1rem;margin-bottom:.25rem}.tt>span{font-size:1.125rem;font-weight:600}
+h2{font-size:1.25rem;line-height:1.75rem;font-weight:700;color:#fff}.help{font-size:.75rem;line-height:1.45;color:var(--s400);margin-top:.25rem;max-width:46rem}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.75rem;margin-bottom:1.5rem}.qa div{padding:.75rem 1rem;border:1px solid rgba(51,65,85,.6);border-radius:.75rem;background:var(--s900);font-size:.75rem;color:var(--s300)}.qa b{display:block;color:var(--s400);font-weight:600;margin-bottom:.125rem}
+hr{margin:1.5rem 0;border:0;border-top:1px solid rgba(51,65,85,.6)}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem .75rem;text-align:center}.g2{display:grid;grid-template-columns:1fr;gap:1.5rem}@media(min-width:1024px){.g2{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}}
+.c2 .cl{font-size:.75rem;font-weight:500;color:var(--s400)}.c2 .cv2{display:block;margin-top:.25rem;font-size:1.25rem;line-height:1.75rem;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}.c2 .cs{display:block;font-size:.75rem;color:var(--s500)}
+.ctl,.res{display:grid;gap:.75rem;align-content:start;min-width:0}
+.fl{font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--s400);margin-top:.5rem}
+.fcr{padding:.25rem 0 1.5rem}.fh{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;flex-wrap:wrap}.fh label,.tl{font-size:.75rem;font-weight:600;color:var(--s300);letter-spacing:.05em}
+.ftr{display:flex;align-items:center;justify-content:space-between;padding-bottom:.75rem}.ftr .tl{font-size:.875rem;font-weight:500;color:var(--s200);letter-spacing:0}
+.fst{display:inline-flex;align-items:center;gap:.25rem}.fu{font-size:.75rem;font-weight:600;color:var(--s400)}
+.fnum{width:3.6rem;height:2.25rem;padding:0 .25rem;text-align:center;font:700 1rem Inter,sans-serif;font-variant-numeric:tabular-nums;color:#e0e7ff;background:var(--s900);border:1px solid var(--s600);border-radius:.5rem;-moz-appearance:textfield;appearance:textfield}
+.fnum::-webkit-outer-spin-button,.fnum::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.fnum:focus{outline:2px solid var(--i400);outline-offset:1px}
+.fsb{width:2.25rem;height:2.25rem;border-radius:.5rem;border:1px solid var(--s600);background:rgba(51,65,85,.5);color:var(--s200);font:700 1.125rem/1 Inter,sans-serif;cursor:pointer}.fsb:active{background:rgba(99,102,241,.5)}
+.fsl{display:block;width:100%;height:2rem;margin:0;background:transparent;appearance:none;-webkit-appearance:none;cursor:pointer;accent-color:var(--i400);--p:0}
+.fsl::-webkit-slider-runnable-track{height:5px;border-radius:999px;background:linear-gradient(90deg,var(--i400) calc(10px + (100% - 20px)*var(--p)),var(--s700) calc(10px + (100% - 20px)*var(--p)))}
+.fsl::-moz-range-track{height:5px;border:0;border-radius:999px;background:linear-gradient(90deg,var(--i400) calc(10px + (100% - 20px)*var(--p)),var(--s700) calc(10px + (100% - 20px)*var(--p)))}
+.fsl::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:20px;height:20px;margin-top:-7.5px;border-radius:50%;background:var(--i300);border:2px solid var(--i50);box-shadow:0 0 0 2px var(--i700);cursor:grab}
+.fsl::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--i300);border:2px solid var(--i50);box-shadow:0 0 0 2px var(--i700);cursor:grab}
+.fmm{display:flex;justify-content:space-between;font-size:.75rem;color:var(--s400)}
+.tg{position:relative;display:inline-flex;cursor:pointer}.tg input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer}.tg i{width:2.75rem;height:1.5rem;background:var(--s700);border-radius:999px;position:relative;transition:background .15s}
+.tg i::after{content:'';position:absolute;top:2px;left:2px;width:1.25rem;height:1.25rem;background:#fff;border-radius:50%;transition:transform .15s}.tg input:checked+i{background:var(--i600)}.tg input:checked+i::after{transform:translateX(100%)}.tg input:focus-visible+i{outline:2px solid var(--i400);outline-offset:2px}
+.fa{display:flex;gap:.5rem}.fsec{flex:1 1 0;min-height:44px;padding:.5rem;border-radius:.75rem;border:1px solid var(--s600);background:rgba(51,65,85,.3);color:var(--s200);font:700 .75rem Inter,sans-serif;cursor:pointer}.fsec:hover{background:rgba(51,65,85,.6)}
+.btn{width:100%;background:var(--i600);color:#fff;font:600 1rem Inter,sans-serif;padding:.75rem 1rem;border:0;border-radius:.75rem;cursor:pointer}.btn:hover{background:var(--i500)}
+.note{font-size:.75rem;line-height:1.45;color:var(--s400)}
+.chips{display:flex;flex-wrap:wrap;gap:.25rem}.tb{padding:.5rem .75rem;border-radius:.75rem;background:transparent;border:1px solid transparent;color:var(--s400);font:700 .75rem Inter,sans-serif;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tb:hover{color:#fff;background:rgba(51,65,85,.5)}.tb.active{background:rgba(51,65,85,.9);color:#fff;border-color:var(--s600);box-shadow:0 4px 12px rgba(0,0,0,.2)}.tb:disabled{opacity:.35;cursor:not-allowed}
+.alert{padding:.75rem 1rem;border-radius:.75rem;background:rgba(248,113,113,.12);color:#f87171;font-size:.875rem;margin-bottom:1rem}
+.cv{position:relative;height:270px}.pbar{position:relative;height:8px;background:var(--s700);border-radius:999px;margin:.5rem 0 .25rem}.pbar i{display:block;height:100%;border-radius:inherit;background:var(--i400)}.pbar u{position:absolute;top:-5px;width:2px;height:18px;background:#fff}
+.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.875rem}th{padding:.5rem .75rem;text-align:left;font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--s400);white-space:nowrap}td{padding:.5rem .75rem;border-top:1px solid rgba(51,65,85,.6);font-variant-numeric:tabular-nums}
+.dt{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;margin-right:.4rem}.ok{color:#4ade80}.no{color:#f87171}
+.cmp{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}.cmp>div{padding:1rem;border:1px solid rgba(51,65,85,.6);border-top:3px solid var(--c);border-radius:1rem;background:var(--s900)}.cmp h3{font-size:1rem;color:#fff}.cmp .help{color:var(--s300)}.cmp b{display:block;margin-top:.5rem;font-size:.875rem;color:var(--s50)}
+@media(max-width:640px){.pn{padding:1rem}.rt thead{display:none}.rt,.rt tbody,.rt tr,.rt td{display:block}.rt tr{border:1px solid rgba(51,65,85,.6);border-radius:.75rem;padding:.25rem .75rem;margin-bottom:.5rem}.rt td{display:flex;justify-content:space-between;gap:.75rem;border:0;padding:.25rem 0;text-align:right}.rt td::before{content:attr(data-l);color:var(--s400);font-size:.75rem;text-align:left}}
+@media(max-width:380px){.fnum{width:3.2rem}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body>
+<div class="wrap"><header class="hd"><div class="br">
+<img src="icon-192.png" alt="THE ML 101 logo" width="44" height="44">
+<div style="min-width:0"><div class="bt">THE ML 101</div><div class="bs">Four Algorithms. Four Perspectives.</div></div></div>
+<div class="ha"><button id="mt" class="hb" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mp"><svg class="ico" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div id="mp" class="mp" hidden></div></div></header>
+<main id="main"></main></div>
+<script>
+const ORIG=[["A",1,5,45,0],["B",2,6,50,0],["C",2,7,55,0],["D",3,6,60,0],["E",4,7,65,1],["F",5,7,72,1],["G",6,8,78,1],["H",7,7,85,1],["I",8,8,90,1],["J",9,8,95,1]];
+const $=s=>document.querySelector(s),F=(x,d=1)=>Number.isFinite(x)?x.toFixed(d):'–';
+const mk=()=>ORIG.map(r=>({id:r[0],s:r[1],z:r[2],e:r[3],p:r[4]}));
+const FLD={lr:['s','z','e'],lg:['s','z','p'],km:['s','z','e'],pc:['s','z','e']},FD={s:['Study Hours',0,12,.5,'h'],z:['Sleep Hours',0,12,.5,'h'],e:['Exam Score',0,100,1,'']};
+const P={},V={'lr.s':6,'lr.z':8,'lg.s':6,'lg.z':8,'lg.th':.5},TF={'lr.s':1,'lr.z':1},SUM={};let K=3,ACT='lr';
+['lr','lg','km','pc'].forEach(k=>P[k]={rows:mk(),sel:0});
+const PG={
+lr:{t:'Linear Regression',c:'#3B82F6',ic:'<path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/>',sub:'Predict a number: the exam score.',qa:['What question?|What exam score can we expect for a student?','What data?|Study Hours and Sleep Hours → Exam Score.','What does it mean?|The model fits the best line. Each coefficient is the score change per extra hour.']},
+lg:{t:'Logistic Regression',c:'#16A34A',ic:'<path d="M3 18h5c5 0 4-12 9-12h4"/>',sub:'Predict a category: pass or fail.',qa:['What question?|Will this student pass or fail?','What data?|Study Hours and Sleep Hours → Passed (0 or 1).','What does it mean?|A probability from 0% to 100%. At or above the threshold, the class is Passed.']},
+km:{t:'K-Means Clustering',c:'#D97706',ic:'<circle cx="7" cy="8" r="3"/><circle cx="17" cy="9" r="3"/><circle cx="12" cy="18" r="3"/>',sub:'Find groups without labels.',qa:['What question?|Are there natural groups of students?','What data?|Study Hours, Sleep Hours, Exam Score (standardized). Passed is not used.','What does it mean?|Similar rows share a cluster. The algorithm does not know what a cluster means; the notes only restate averages.']},
+pc:{t:'Principal Component Analysis',c:'#9333EA',ic:'<path d="M4 20V4M4 20h16M7 16l10-8"/>',sub:'Simplify 3 variables into 2 components.',qa:['What question?|Can three variables be summarized by two?','What data?|Study Hours, Sleep Hours, Exam Score (standardized).','What does it mean?|PC1 and PC2 are new axes. Explained variance is how much information each keeps.']}};
+const RT={
+lr:'<div class="fcr ftr"><span class="tl">Use Study Hours</span><label class="tg"><input type="checkbox" data-t="f.lr.s" checked><i></i></label></div><div class="fcr ftr"><span class="tl">Use Sleep Hours</span><label class="tg"><input type="checkbox" data-t="f.lr.z" checked><i></i></label></div><div class="fl" id="lr-rh"></div><div class="cv"><canvas id="lr-r"></canvas></div><p class="note" id="lr-rn"></p><div class="fl">Actual vs predicted per student</div><div class="cv"><canvas id="lr-c"></canvas></div><div class="g3 c2" id="lr-st"></div><hr><div class="fl">New student</div><div id="lr-in"></div><p class="note" id="lr-eq"></p><div class="tw" id="lr-tab"></div>',
+lg:'<div class="fl">Actual vs predicted</div><div class="tw" id="lg-tab"></div><div class="g3 c2" id="lg-st"></div><hr><div class="fl">New student</div><div id="lg-in"></div><div id="lg-out"></div>',
+km:'<div class="fl">Number of clusters (K)</div><div class="chips" id="km-k"></div><div class="cv"><canvas id="km-c"></canvas></div><div class="fl">Elbow method</div><div class="cv"><canvas id="km-e"></canvas></div><p class="note" id="km-el"></p><div class="fl">Cluster summary</div><div class="tw" id="km-sum"></div><div class="fl">Assignments</div><div class="tw" id="km-tab"></div>',
+pc:'<div class="fl">Before: original features</div><div class="cv"><canvas id="pc-b"></canvas></div><div class="fl">After: PC1 vs PC2</div><div class="cv"><canvas id="pc-a"></canvas></div><p class="note" id="pc-cmp"></p><div class="tw" id="pc-tab"></div>'};
+const ICO=s=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">'+s+'</svg>';
+/* build pages + menu */
+const main=$('#main');let menu='';
+Object.keys(PG).forEach(k=>{const g=PG[k];menu+='<button class="mi" data-go="'+k+'" type="button"><span style="color:'+g.c+'">'+ICO(g.ic)+'</span>'+g.t+'</button>';
+main.insertAdjacentHTML('beforeend','<section class="tab-section" id="s-'+k+'"><div class="pn"><div class="tt"><span style="color:'+g.c+'">'+ICO(g.ic)+'</span><div><h2>'+g.t+'</h2><p class="help">'+g.sub+' This page has its own dataset.</p></div></div><div class="alert" id="'+k+'-msg" hidden></div>'+(k=='km'||k=='pc'?'<div class="g3 c2" id="'+k+'-st"></div><hr>':'')+'<div class="g2"><div class="ctl" id="'+k+'-ds"></div><div class="res" id="'+k+'-rt">'+RT[k]+'</div></div></div></section>')});
+menu+='<div class="md"></div><button class="mi" id="ia" type="button"><span style="color:#818cf8">'+ICO('<path d="M12 3v12M7 10l5 5 5-5M5 21h14"/>')+'</span><b id="il" style="font-weight:600">Download app</b></button><p class="ih" id="ih" hidden></p>';$('#mp').innerHTML=menu;
+main.insertAdjacentHTML('beforeend','<section class="tab-section" id="s-cmp"><div class="pn"><div class="tt"><span style="color:#1d4ed8">'+ICO('<rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/>')+'</span><div><h2>Compare</h2><p class="help">Four algorithms, four questions. Each result comes from that page’s own dataset, so edit a page to change its card.</p></div></div><div class="cmp" id="cmp-c"></div><hr><div class="tw" id="cmp-t"></div></div></section>');
+/* helpers */
+const T=(h,R)=>'<table class="rt"><thead><tr>'+h.map(x=>'<th>'+x+'</th>').join('')+'</tr></thead><tbody>'+R.map(r=>'<tr>'+r.map((c,i)=>'<td data-l="'+h[i]+'">'+c+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+const ch=a=>a.map(x=>'<div class="c2"><span class="cl">'+x[0]+'</span><span class="cv2">'+x[1]+'</span><span class="cs">'+x[2]+'</span></div>').join('');
+const dt=c=>'<span class="dt" style="background:'+c+'"></span>';
+function sr(key,lab,mn,mx,st,v,u){return '<div class="fcr" data-k="'+key+'" data-min="'+mn+'" data-max="'+mx+'" data-st="'+st+'"><div class="fh"><label>'+lab+'</label><div class="fst"><button type="button" class="fsb" data-d="-1" aria-label="Decrease '+lab+'">−</button><input class="fnum" type="number" inputmode="decimal" min="'+mn+'" max="'+mx+'" step="'+st+'" value="'+v+'" aria-label="'+lab+'"><button type="button" class="fsb" data-d="1" aria-label="Increase '+lab+'">+</button>'+(u?'<span class="fu">'+u+'</span>':'')+'</div></div><input class="fsl" type="range" min="'+mn+'" max="'+mx+'" step="'+st+'" value="'+v+'" style="--p:'+(v-mn)/(mx-mn)+'" aria-label="'+lab+'"><div class="fmm"><span>'+mn+u+'</span><span>'+mx+u+'</span></div></div>'}
+$('#lr-in').innerHTML=sr('i.lr.s','Study Hours',0,12,.5,6,'h')+sr('i.lr.z','Sleep Hours',0,12,.5,8,'h');
+$('#lg-in').innerHTML=sr('i.lg.s','Study Hours',0,12,.5,6,'h')+sr('i.lg.z','Sleep Hours',0,12,.5,8,'h')+sr('i.lg.th','Pass threshold',.05,.95,.05,.5,'');
+function ds(k){const p=P[k],r=p.rows[p.sel];$('#'+k+'-ds').innerHTML='<div class="fl">Dataset · '+p.rows.length+' students</div><div class="chips">'+p.rows.map((x,i)=>'<button type="button" class="tb'+(i==p.sel?' active':'')+'" data-sel="'+i+'">'+x.id+'</button>').join('')+'</div>'+
+(r?FLD[k].map(f=>f=='p'?'<div class="fcr ftr"><span class="tl">Passed?</span><label class="tg"><input type="checkbox" data-t="d.'+k+'.p"'+(r.p?' checked':'')+'><i></i></label></div>':sr('d.'+k+'.'+f,FD[f][0],FD[f][1],FD[f][2],FD[f][3],r[f],FD[f][4])).join(''):'<p class="note">The dataset is empty. Add a student.</p>')+
+'<div class="fa"><button type="button" class="fsec" data-a="add">Add student</button><button type="button" class="fsec" data-a="del">Delete</button><button type="button" class="fsec" data-a="rst">Reset</button></div><p class="note">Moving a slider changes student '+(r?r.id:'–')+' on this page only.</p>'}
+function setv(r,v){v=parseFloat(v);if(!Number.isFinite(v))return;const mn=+r.dataset.min,mx=+r.dataset.max,st=+r.dataset.st;v=+Math.min(mx,Math.max(mn,Math.round(v/st)*st)).toFixed(2);const n=r.querySelector('.fnum'),s=r.querySelector('.fsl');if(document.activeElement!==n)n.value=v;s.value=v;s.style.setProperty('--p',(v-mn)/(mx-mn));
+const[t,p,f]=r.dataset.k.split('.');if(t=='d'){const w=P[p].rows[P[p].sel];if(w)w[f]=v}else V[p+'.'+f]=v;run(p)}
+document.addEventListener('input',e=>{const r=e.target.closest('.fcr[data-k]');if(r&&e.target.type!='checkbox')setv(r,e.target.value)});
+document.addEventListener('change',e=>{const t=e.target.dataset.t;if(!t)return;const[a,p,f]=t.split('.');if(a=='f')TF[p+'.'+f]=e.target.checked?1:0;else{const w=P[p].rows[P[p].sel];if(w)w.p=e.target.checked?1:0}run(p)});
+document.addEventListener('click',e=>{const b=e.target,q=s=>b.closest(s);
+if(q('.fsb')){const r=q('.fcr');setv(r,+r.querySelector('.fnum').value+ +q('.fsb').dataset.d*+r.dataset.st);return}
+if(q('[data-sel]')){const k=q('[id$="-ds"]').id.slice(0,2);P[k].sel=+q('[data-sel]').dataset.sel;ds(k);return}
+if(q('[data-a]')){const k=q('[id$="-ds"]').id.slice(0,2),p=P[k],a=q('[data-a]').dataset.a;
+if(a=='rst'){p.rows=mk();p.sel=0}else if(a=='del'){if(p.rows.length){p.rows.splice(p.sel,1);p.sel=Math.max(0,p.sel-1)}}else{if(p.rows.length>=26)return;const used=p.rows.map(x=>x.id);let id='A';for(let c=65;c<91;c++)if(!used.includes(String.fromCharCode(c))){id=String.fromCharCode(c);break}const m=f=>p.rows.length?Math.round(p.rows.reduce((s,x)=>s+x[f],0)/p.rows.length/FD[f][3])*FD[f][3]:FD[f][1]+FD[f][3]*2;p.rows.push({id,s:m('s'),z:m('z'),e:m('e'),p:0});p.sel=p.rows.length-1}
+ds(k);run(k);return}
+if(q('#ia')){inst();return}
+if(q('[data-kk]')){K=+q('[data-kk]').dataset.kk;run('km');return}
+if(q('[data-go]')){show(q('[data-go]').dataset.go);$('#mp').hidden=1;$('#mt').setAttribute('aria-expanded','false');return}
+if(q('#mt')){const o=$('#mp').hidden;$('#mp').hidden=!o;$('#mt').setAttribute('aria-expanded',o)}else if(!q('#mp')){$('#mp').hidden=1;$('#mt').setAttribute('aria-expanded','false')}});
+/* math */
+function solve(A,b){const n=b.length,M=A.map((r,i)=>[...r,b[i]]);for(let c=0;c<n;c++){let p=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[p][c]))p=r;if(Math.abs(M[p][c])<1e-9)return null;[M[c],M[p]]=[M[p],M[c]];for(let r=0;r<n;r++)if(r!==c){const f=M[r][c]/M[c][c];for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k]}}return M.map((r,i)=>r[n]/r[i])}
+function stdz(M){const n=M.length,m=M[0].length,mu=[],sd=[];for(let j=0;j<m;j++){const c=M.map(r=>r[j]),a=c.reduce((x,y)=>x+y,0)/n;mu.push(a);sd.push(Math.sqrt(c.reduce((x,y)=>x+(y-a)**2,0)/n))}return sd.some(s=>s<1e-9)?null:{mu,sd,Z:M.map(r=>r.map((v,j)=>(v-mu[j])/sd[j]))}}
+const d2=(a,b)=>a.reduce((s,v,i)=>s+(v-b[i])**2,0);
+function km1(Z,k,seed){const n=Z.length;let R=()=>(seed=(seed*1664525+1013904223)>>>0)/4294967296,C=[Z[Math.floor(R()*n)].slice()];
+while(C.length<k){const D=Z.map(p=>Math.min(...C.map(c=>d2(p,c)))),t=D.reduce((a,b)=>a+b,0)*R();let a=0,ix=n-1;for(let i=0;i<n;i++){a+=D[i];if(a>=t){ix=i;break}}C.push(Z[ix].slice())}
+let L=Array(n).fill(-1);for(let it=0;it<100;it++){const nl=Z.map(p=>{let bi=0,bd=1e99;C.forEach((c,i)=>{const v=d2(p,c);if(v<bd){bd=v;bi=i}});return bi});const chg=nl.some((v,i)=>v!==L[i]);L=nl;C=C.map((c,i)=>{const m=Z.filter((_,j)=>L[j]===i);return m.length?c.map((_,q)=>m.reduce((s,p)=>s+p[q],0)/m.length):c});if(!chg)break}
+return{L,C,w:Z.reduce((s,p,i)=>s+d2(p,C[L[i]]),0)}}
+function kbest(Z,k){let b=null;for(let s=1;s<=10;s++){const r=km1(Z,k,s*7919);if(!b||r.w<b.w-1e-12)b=r}return b}
+function jacobi(S){const n=3;let A=S.map(r=>r.slice()),V=[[1,0,0],[0,1,0],[0,0,1]];for(let it=0;it<60;it++){let p=0,q=1,mx=0;for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)if(Math.abs(A[i][j])>mx){mx=Math.abs(A[i][j]);p=i;q=j}if(mx<1e-12)break;const th=.5*Math.atan2(2*A[p][q],A[q][q]-A[p][p]),c=Math.cos(th),s=Math.sin(th);
+for(let k=0;k<n;k++){const a=A[k][p],b=A[k][q];A[k][p]=c*a-s*b;A[k][q]=s*a+c*b}for(let k=0;k<n;k++){const a=A[p][k],b=A[q][k];A[p][k]=c*a-s*b;A[q][k]=s*a+c*b}for(let k=0;k<n;k++){const a=V[k][p],b=V[k][q];V[k][p]=c*a-s*b;V[k][q]=s*a+c*b}}
+return[0,1,2].map(i=>({val:A[i][i],vec:[0,1,2].map(k=>V[k][i])}))}
+/* charts */
+const CH={};function chart(id,type,dtt,o){if(!window.Chart||ACT!==id.slice(0,2))return;CH[id]&&CH[id].destroy();Chart.defaults.color='#94a3b8';Chart.defaults.borderColor='rgba(71,85,105,.4)';Chart.defaults.font.family='Inter,sans-serif';
+CH[id]=new Chart($('#'+id),{type,data:dtt,options:Object.assign({responsive:true,maintainAspectRatio:false,animation:false,plugins:{legend:{labels:{boxWidth:10}}}},o)})}
+const ax=(x,y)=>({scales:{x:{title:{display:1,text:x}},y:{title:{display:1,text:y}}}});
+/* tools */
+function lin(d){const ks=['s','z'].filter(k=>TF['lr.'+k]),nm={s:'Study',z:'Sleep'};
+if(!ks.length)return'Turn on at least one input feature.';if(d.length<ks.length+2)return'Need at least '+(ks.length+2)+' students to fit this model.';
+const m=ks.length+1,ix=[...Array(m).keys()],X=d.map(r=>[1,...ks.map(k=>r[k])]),w=solve(ix.map(i=>ix.map(j=>X.reduce((a,x)=>a+x[i]*x[j],0))),ix.map(i=>X.reduce((a,x,q)=>a+x[i]*d[q].e,0)));
+if(!w)return'These inputs are constant or perfectly correlated (singular matrix), so no unique line exists. Make the values vary.';
+const f=v=>w[0]+ks.reduce((a,k,i)=>a+w[i+1]*v[k],0),pr=d.map(f),mae=d.reduce((a,r,i)=>a+Math.abs(r.e-pr[i]),0)/d.length,me=d.reduce((a,r)=>a+r.e,0)/d.length,st=d.reduce((a,r)=>a+(r.e-me)**2,0),r2=st>0?1-d.reduce((a,r,i)=>a+(r.e-pr[i])**2,0)/st:NaN;
+const p=Math.max(0,Math.min(100,f({s:V['lr.s'],z:V['lr.z']})));
+$('#lr-st').innerHTML=ch([['Predicted score',F(p),'points'],['MAE',F(mae),'avg error, points'],['R²',F(r2,2),'fit quality']]);
+$('#lr-eq').textContent='Score = '+F(w[0])+ks.map((k,i)=>' '+(w[i+1]<0?'−':'+')+' '+F(Math.abs(w[i+1]),2)+' × '+nm[k]+' Hours').join('')+'. Predictions are clamped to 0–100.';
+const rk=ks.length==1?ks[0]:null,nmf={s:'Study Hours',z:'Sleep Hours'},tl={plugins:{tooltip:{callbacks:{label:c=>(c.raw.id?c.raw.id+': ':'')+F(c.raw.x)+', '+F(c.raw.y)}}}};
+$('#lr-rh').textContent=rk?'Simple linear regression: Exam Score vs '+nmf[rk]:'Multiple linear regression: '+ks.map(k=>nmf[k]).join(' + ')+' → Exam Score';
+if(rk){const ln=d.map(r=>({x:r[rk],y:f(r)})).sort((a,b)=>a.x-b.x);
+chart('lr-r','scatter',{datasets:[{label:'Actual students',data:d.map(r=>({x:r[rk],y:r.e,id:r.id})),backgroundColor:'#3B82F6',pointRadius:6},{label:'Fitted line',data:ln,showLine:true,borderColor:'#f8fafc',borderWidth:2,pointRadius:0,tension:0},{label:'New student',data:[{x:V['lr.'+rk],y:p,id:'New'}],backgroundColor:'#f8fafc',borderColor:'#3B82F6',borderWidth:2,pointStyle:'star',pointRadius:11}]},Object.assign(ax(nmf[rk],'Exam Score'),tl));
+$('#lr-rn').textContent='Dots are the actual students. The straight line is the predicted score at each '+nmf[rk]+' value, sorted from low to high.'}
+else{const all=[...d.map(r=>r.e),...pr],lo=Math.min(...all),hi=Math.max(...all);
+chart('lr-r','scatter',{datasets:[{label:'Students',data:d.map((r,i)=>({x:r.e,y:pr[i],id:r.id})),backgroundColor:'#3B82F6',pointRadius:6},{label:'Perfect prediction',data:[{x:lo,y:lo},{x:hi,y:hi}],showLine:true,borderColor:'#94a3b8',borderDash:[6,4],borderWidth:2,pointRadius:0}]},Object.assign(ax('Actual Exam Score','Predicted Exam Score'),tl));
+$('#lr-rn').textContent='With two inputs the model is a plane, not a line, so it cannot be drawn against one X-axis. Points close to the dashed diagonal are predicted well.'}
+chart('lr-c','bar',{labels:d.map(r=>r.id),datasets:[{label:'Actual',data:d.map(r=>r.e),backgroundColor:'#3B82F666'},{label:'Predicted',type:'line',data:pr,borderColor:'#3B82F6',backgroundColor:'#3B82F6',tension:0}]},ax('Student','Exam Score'));
+$('#lr-tab').innerHTML=T(['ID','Actual','Predicted','Error'],d.map((r,i)=>[r.id,r.e,F(pr[i]),F(pr[i]-r.e)]));SUM.lr=F(p)+' points predicted (study '+V['lr.s']+'h, sleep '+V['lr.z']+'h)'}
+function logi(d){if(d.length<4)return'Need at least 4 students.';const n1=d.filter(r=>r.p).length;if(!n1||n1==d.length)return'Both Failed (0) and Passed (1) students are needed to train.';
+const st=stdz(d.map(r=>[r.s,r.z]));if(!st)return'Study Hours or Sleep Hours is the same for every student, so the model cannot learn from it.';
+let w=[0,0],b=0;const sg=t=>1/(1+Math.exp(-t)),n=d.length;for(let it=0;it<4000;it++){let g=[0,0],gb=0;st.Z.forEach((x,i)=>{const e=sg(w[0]*x[0]+w[1]*x[1]+b)-d[i].p;g[0]+=e*x[0];g[1]+=e*x[1];gb+=e});w[0]-=.3*(g[0]/n+.01*w[0]);w[1]-=.3*(g[1]/n+.01*w[1]);b-=.3*gb/n}
+const Pf=(s,z)=>sg(w[0]*(s-st.mu[0])/st.sd[0]+w[1]*(z-st.mu[1])/st.sd[1]+b),th=V['lg.th'],pr=d.map(r=>Pf(r.s,r.z)),cl=pr.map(p=>p>=th?1:0),acc=cl.filter((c,i)=>c==d[i].p).length/n,p=Pf(V['lg.s'],V['lg.z']),pass=p>=th;
+$('#lg-st').innerHTML=ch([['Pass probability',F(p*100,0)+'%','new student'],['Predicted class',pass?'1 PASSED':'0 FAILED','threshold '+th.toFixed(2)],['Accuracy',F(acc*100,0)+'%','on this dataset']]);
+$('#lg-out').innerHTML='<div class="fl">Probability of passing</div><div class="pbar"><i style="width:'+p*100+'%"></i><u style="left:'+th*100+'%"></u></div><p class="note">'+F(p*100,0)+'% probability of passing. The white line is the threshold.</p>';
+$('#lg-tab').innerHTML=T(['ID','Study','Sleep','Actual','P(pass)','Predicted',''],d.map((r,i)=>[r.id,r.s,r.z,r.p,F(pr[i]*100,0)+'%',cl[i],cl[i]==r.p?'<span class="ok">✓</span>':'<span class="no">✗</span>']));SUM.lg=F(p*100,0)+'% probability → '+(pass?'Passed':'Failed')}
+function kmu(d){const n=d.length;if(n<2)return'Need at least 2 students.';const st=stdz(d.map(r=>[r.s,r.z,r.e]));if(!st)return'Study, Sleep or Exam Score is the same for every student, so distances cannot be standardized. Make the values vary.';
+const km=Math.min(6,n),k=Math.min(K,km);$('#km-k').innerHTML=[2,3,4,5,6].map(v=>'<button type="button" class="tb'+(v==k?' active':'')+'" data-kk="'+v+'"'+(v>n?' disabled':'')+'>'+v+'</button>').join('');
+const r=kbest(st.Z,k),mean=(a,f)=>a.length?a.reduce((s,x)=>s+f(x),0)/a.length:NaN,mem=c=>d.filter((_,i)=>r.L[i]==c),ord=[...Array(k).keys()].sort((a,b)=>(mean(mem(a),x=>x.e)||1e9)-(mean(mem(b),x=>x.e)||1e9)),map={};ord.forEach((o,i)=>map[o]=i);
+const L=r.L.map(l=>map[l]),C=ord.map(o=>r.C[o].map((v,j)=>v*st.sd[j]+st.mu[j])),COL=['#D97706','#38bdf8','#ec4899','#10b981','#a78bfa','#94a3b8'],lv=(v,j)=>{const z=(v-st.mu[j])/st.sd[j];return z>.5?'high':z<-.5?'low':'average'};
+const sm=[...Array(k).keys()].map(c=>{const m=d.filter((_,i)=>L[i]==c),a=['s','z','e'].map(q=>mean(m,x=>x[q]));return[dt(COL[c])+'Cluster '+(c+1),m.length,F(a[0]),F(a[1]),F(a[2]),m.length?lv(a[0],0)+' study, '+lv(a[1],1)+' sleep, '+lv(a[2],2)+' score':'empty']});
+$('#km-sum').innerHTML=T(['Cluster','Students','Avg Study','Avg Sleep','Avg Score','Compared with all'],sm);$('#km-tab').innerHTML=T(['ID','Study','Sleep','Score','Cluster'],d.map((x,i)=>[x.id,x.s,x.z,x.e,dt(COL[L[i]])+(L[i]+1)]));
+chart('km-c','scatter',{datasets:[...Array(k).keys()].map(c=>({label:'Cluster '+(c+1),data:d.filter((_,i)=>L[i]==c).map(x=>({x:x.s,y:x.e,id:x.id})),backgroundColor:COL[c],pointRadius:6})).concat([{label:'Centroids',data:C.map(c=>({x:c[0],y:c[2]})),pointStyle:'star',pointRadius:12,backgroundColor:COL.slice(0,k),borderColor:'#f8fafc',borderWidth:1.5}])},Object.assign(ax('Study Hours','Exam Score'),{plugins:{tooltip:{callbacks:{label:c=>(c.raw.id||'Centroid')+': study '+F(c.raw.x)+', score '+F(c.raw.y)}}}}));
+const ws=[...Array(km).keys()].map(q=>kbest(st.Z,q+1).w);let el=null,bg=0;if(km>=3)ws.forEach((w,i)=>{const gap=ws[0]+(ws[km-1]-ws[0])*i/(km-1)-w;if(gap>bg){bg=gap;el=i+1}});
+chart('km-e','line',{labels:ws.map((_,i)=>i+1),datasets:[{label:'WCSS',data:ws,borderColor:'#D97706',backgroundColor:'#D97706',tension:0,pointRadius:ws.map((_,i)=>i+1==k?8:4)}]},ax('K (number of clusters)','WCSS'));
+$('#km-el').textContent='WCSS is the total squared distance from each point to its cluster centre (standardized units). It always falls as K grows; the elbow is where extra clusters stop helping much. '+(el?'Here the curve bends most at K = '+el+'. The large dot marks your K = '+k+'.':'Add more students to see an elbow.');
+$('#km-st').innerHTML=ch([['Clusters (K)',k,'chosen'],['WCSS',F(ws[k-1],2),'at this K'],['Elbow at',el?'K = '+el:'–','largest bend']]);SUM.km='K = '+k+' clusters, sizes '+sm.map(s=>s[1]).join(' / ')}
+function pca(d){const n=d.length;if(n<3)return'Need at least 3 students.';const st=stdz(d.map(r=>[r.s,r.z,r.e]));if(!st)return'A feature has the same value for every student (zero variance), so it cannot be standardized. Make the values vary.';
+const S=[0,1,2].map(i=>[0,1,2].map(j=>st.Z.reduce((a,z)=>a+z[i]*z[j],0)/n)),E=jacobi(S).sort((a,b)=>b.val-a.val),tr=E.reduce((a,e)=>a+e.val,0);if(!(tr>1e-9))return'The covariance matrix is degenerate; make the values vary.';
+E.forEach(e=>{const m=e.vec.reduce((a,v)=>Math.abs(v)>Math.abs(a)?v:a,0);if(m<0)e.vec=e.vec.map(v=>-v)});
+const rt=E.map(e=>e.val/tr),sc=st.Z.map(z=>[0,1].map(q=>z.reduce((a,v,j)=>a+v*E[q].vec[j],0)));
+$('#pc-st').innerHTML=ch([['PC1',F(rt[0]*100)+'%','explained variance'],['PC2',F(rt[1]*100)+'%','explained variance'],['Total',F((rt[0]+rt[1])*100)+'%','PC1 + PC2']]);
+$('#pc-cmp').textContent='Before: 3 features per student (Study, Sleep, Score). After: 2 components per student, keeping '+F((rt[0]+rt[1])*100)+'% of the variance and dropping '+F(rt[2]*100)+'%. PC1 loadings (Study, Sleep, Score): '+E[0].vec.map(v=>F(v,2)).join(', ')+'.';
+$('#pc-tab').innerHTML=T(['ID','PC1','PC2'],d.map((r,i)=>[r.id,F(sc[i][0],2),F(sc[i][1],2)]));
+const pt=(x,y)=>({datasets:[{label:'Students',data:d.map((r,i)=>({x:x(r,i),y:y(r,i),id:r.id})),backgroundColor:'#9333EA',pointRadius:6}]}),tt={plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw.id+': '+F(c.raw.x,2)+', '+F(c.raw.y,2)}}}};
+chart('pc-b','scatter',pt(r=>r.s,r=>r.e),Object.assign(ax('Study Hours','Exam Score'),tt));chart('pc-a','scatter',pt((r,i)=>sc[i][0],(r,i)=>sc[i][1]),Object.assign(ax('PC1','PC2'),tt));SUM.pc='3 → 2 dimensions, '+F((rt[0]+rt[1])*100)+'% variance kept'}
+function run(k){let e='';const d=P[k].rows;try{e=d.length?({lr:lin,lg:logi,km:kmu,pc:pca})[k](d)||'':'The dataset is empty. Add a student or reset.'}catch(x){e='Unexpected problem: '+x.message}
+const m=$('#'+k+'-msg');m.textContent=e;m.hidden=!e;$('#'+k+'-st').hidden=$('#'+k+'-rt').hidden=!!e;if(e){delete SUM[k];['c','e','b','a','r'].forEach(s=>{const c=CH[k+'-'+s];if(c){c.destroy();delete CH[k+'-'+s]}})}}
+function cmp(){const A=[['lr','Linear Regression','How much will the student score?','Numerical prediction'],['lg','Logistic Regression','Will the student pass?','Probability and classification'],['km','K-Means','Which group does the student belong to?','Cluster assignment'],['pc','PCA','Can we simplify the dataset?','Reduced dimensions']];
+$('#cmp-c').innerHTML=A.map(a=>'<div style="--c:'+PG[a[0]].c+'"><h3>'+a[1]+'</h3><p class="help">'+a[2]+'</p><p class="note">Output: '+a[3]+'</p><b>'+(SUM[a[0]]||'No result: fix this page’s dataset')+'</b><p class="note">Dataset: '+P[a[0]].rows.length+' students</p></div>').join('');
+$('#cmp-t').innerHTML=T(['Algorithm','Learning Type','Main Purpose','Output'],[['Linear Regression','Supervised','Regression','Numerical value'],['Logistic Regression','Supervised','Classification','Class probability'],['K-Means','Unsupervised','Clustering','Cluster'],['PCA','Unsupervised','Dimensionality Reduction','Principal Components']])}
+function show(k){if(!document.getElementById('s-'+k))k='lr';ACT=k;document.querySelectorAll('.tab-section').forEach(s=>s.classList.toggle('active',s.id=='s-'+k));document.querySelectorAll('.mi').forEach(b=>b.classList.toggle('on',b.dataset.go==k));history.replaceState(null,'','#'+k);if(k=='cmp')cmp();else run(k);window.scrollTo(0,0)}
+let DP=null;const ih=t=>{const h=$('#ih');h.textContent=t;h.hidden=!t};
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();DP=e});addEventListener('appinstalled',()=>{DP=null;ih('App installed.')});
+async function inst(){if(matchMedia('(display-mode: standalone)').matches||navigator.standalone){ih('The app is already installed.');return}
+if(DP){DP.prompt();const r=await DP.userChoice;DP=null;ih(r.outcome=='accepted'?'Installing…':'Install cancelled. Tap Download app to try again.');return}
+ih(/iphone|ipad|ipod/i.test(navigator.userAgent)?'On iPhone or iPad: tap Share, then “Add to Home Screen”.':'Open your browser menu and choose “Install app” or “Add to Home screen”.')}
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(()=>{});
+['lr','lg','km','pc'].forEach(k=>{ds(k);run(k)});show(location.hash.slice(1)||'lr');
+</script></body></html>
