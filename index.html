@@ -104,7 +104,7 @@ function ds(k){const p=P[k],r=p.rows[p.sel];$('#'+k+'-ds').innerHTML='<div class
 function setv(r,v){v=parseFloat(v);if(!Number.isFinite(v))return;const mn=+r.dataset.min,mx=+r.dataset.max,st=+r.dataset.st;v=+Math.min(mx,Math.max(mn,Math.round(v/st)*st)).toFixed(2);const n=r.querySelector('.fnum'),s=r.querySelector('.fsl');if(document.activeElement!==n)n.value=v;s.value=v;s.style.setProperty('--p',(v-mn)/(mx-mn));
 const[t,p,f]=r.dataset.k.split('.');if(t=='d'){const w=P[p].rows[P[p].sel];if(w)w[f]=v}else V[p+'.'+f]=v;run(p)}
 document.addEventListener('input',e=>{const r=e.target.closest('.fcr[data-k]');if(r&&e.target.type!='checkbox')setv(r,e.target.value)});
-document.addEventListener('change',e=>{const t=e.target.dataset.t;if(!t)return;const[a,p,f]=t.split('.');if(a=='f')TF[p+'.'+f]=e.target.checked?1:0;else{const w=P[p].rows[P[p].sel];if(w)w.p=e.target.checked?1:0}run(p)});
+document.addEventListener('change',e=>{const t=e.target.dataset.t;if(!t)return;const[a,p,f]=t.split('.');if(a=='f'){TF[p+'.'+f]=e.target.checked?1:0;saveMemory();if(p==='lr')renderLRSimulator(P.lr.rows);else run(p)}else{const w=P[p].rows[P[p].sel];if(w)w.p=e.target.checked?1:0;run(p)}});
 document.addEventListener('click',e=>{const b=e.target,q=s=>b.closest(s);
 if(q('.fsb')){const r=q('.fcr');setv(r,+r.querySelector('.fnum').value+ +q('.fsb').dataset.d*+r.dataset.st);return}
 if(q('[data-sel]')){const k=q('[id$="-ds"]').id.slice(0,2);P[k].sel=+q('[data-sel]').dataset.sel;ds(k);return}
@@ -149,6 +149,13 @@ chart('lr-r','scatter',{datasets:[{label:'Actual students',data:d.map(r=>({x:r.e
 $('#lr-rn').textContent='This theory model always uses both Study Hours and Sleep Hours. The feature toggles do not change this dataset, fitted model, chart, or table.';
 chart('lr-c','bar',{labels:d.map(r=>r.id),datasets:[{label:'Actual',data:d.map(r=>r.e),backgroundColor:'#3B82F666'},{label:'Theory predicted',type:'line',data:theoryPred,borderColor:'#3B82F6',backgroundColor:'#3B82F6',tension:0}]},ax('Student','Exam Score'));
 $('#lr-tab').innerHTML=T(['ID','Actual','Theory Predicted','Error'],d.map((r,i)=>[r.id,r.e,F(theoryPred[i]),F(theoryPred[i]-r.e)]));
+renderLRSimulator(d);
+}
+function renderLRSimulator(d){
+const selected=['s','z'].filter(k=>TF['lr.'+k]),names={s:'Study',z:'Sleep'};
+const fit=keys=>{const m=keys.length+1,ix=[...Array(m).keys()],X=d.map(r=>[1,...keys.map(k=>r[k])]),w=solve(ix.map(i=>ix.map(j=>X.reduce((a,x)=>a+x[i]*x[j],0))),ix.map(i=>X.reduce((a,x,q)=>a+x[i]*d[q].e,0)));return w?{w,predict:v=>w[0]+keys.reduce((a,k,i)=>a+w[i+1]*v[k],0)}:null};
+const sim=selected.length&&d.length>=2?fit(selected):null;
+const raw=sim?sim.predict({s:V['lr.s'],z:V['lr.z']}):NaN,predicted=Math.max(0,Math.min(100,raw));
 if(sim){$('#lr-eq').textContent='SIMULATOR · Score = '+F(sim.w[0])+selected.map((k,i)=>' '+(sim.w[i+1]<0?'−':'+')+' '+F(Math.abs(sim.w[i+1]),2)+' × '+names[k]+' Hours').join('')+'. New-student prediction is clamped to 0–100.';$('#lr-st').querySelector('.c2 .cv2').textContent=F(predicted)+' points';$('#lr-st').querySelector('.c2 .cs').textContent='new student · selected inputs';SUM.lr=F(predicted)+' points predicted (simulator)'}
 else{$('#lr-eq').textContent='SIMULATOR · Turn on at least one input feature to predict a new student. The theory results above remain available and unchanged.';$('#lr-st').querySelector('.c2 .cv2').textContent='—';$('#lr-st').querySelector('.c2 .cs').textContent='new student simulator';SUM.lr='Theory model available; simulator inputs are off'}
 }
