@@ -67,7 +67,7 @@ const ORIG=[["A",1,5,45,0],["B",2,6,50,0],["C",2,7,55,0],["D",3,6,60,0],["E",4,7
 const $=s=>document.querySelector(s),F=(x,d=1)=>Number.isFinite(x)?x.toFixed(d):'–';
 const mk=()=>ORIG.map(r=>({id:r[0],s:r[1],z:r[2],e:r[3],p:r[4]}));
 const FLD={lr:['s','z','e'],lg:['s','z','p'],km:['s','z','e'],pc:['s','z','e']},FD={s:['Study Hours',0,12,.5,'h'],z:['Sleep Hours',0,12,.5,'h'],e:['Exam Score',0,100,1,'']};
-const P={},V={'lr.s':6,'lr.z':8,'lg.s':6,'lg.z':8,'lg.th':.5},TF={'lr.s':1,'lr.z':1},SUM={};let K=3,ACT='lr';
+const P={},V={'lr.s':6,'lr.z':8,'lg.s':6,'lg.z':8,'lg.th':.5},TF={'lr.s':1,'lr.z':1},SUM={};let K=3,ACT='lr',LRT='';
 ['lr','lg','km','pc'].forEach(k=>P[k]={rows:mk(),sel:0});
 // Automatically remember editable data and settings in this browser on this device.
 const MEMORY_KEY='the-ml-101-browser-memory-v1';
@@ -80,7 +80,7 @@ lg:{t:'Logistic Regression',c:'#16A34A',ic:'<path d="M3 18h5c5 0 4-12 9-12h4"/>'
 km:{t:'K-Means Clustering',c:'#D97706',ic:'<circle cx="7" cy="8" r="3"/><circle cx="17" cy="9" r="3"/><circle cx="12" cy="18" r="3"/>',sub:'Find groups without labels.',qa:['What question?|Are there natural groups of students?','What data?|Study Hours, Sleep Hours, Exam Score (standardized). Passed is not used.','What does it mean?|Similar rows share a cluster. The algorithm does not know what a cluster means; the notes only restate averages.']},
 pc:{t:'Principal Component Analysis',c:'#9333EA',ic:'<path d="M4 20V4M4 20h16M7 16l10-8"/>',sub:'Simplify 3 variables into 2 components.',qa:['What question?|Can three variables be summarized by two?','What data?|Study Hours, Sleep Hours, Exam Score (standardized).','What does it mean?|PC1 and PC2 are new axes. Explained variance is how much information each keeps.']}};
 const RT={
-lr:'<div class="fcr ftr keep"><span class="tl">Use Study Hours · simulator</span><label class="tg"><input type="checkbox" data-t="f.lr.s"'+(TF['lr.s']?' checked':'')+'><i></i></label></div><div class="fcr ftr keep"><span class="tl">Use Sleep Hours · simulator</span><label class="tg"><input type="checkbox" data-t="f.lr.z"'+(TF['lr.z']?' checked':'')+'><i></i></label></div><div class="fl" id="lr-rh"></div><div class="cv"><canvas id="lr-r"></canvas></div><p class="note" id="lr-rn"></p><div class="fl">Actual vs predicted per student</div><div class="cv"><canvas id="lr-c"></canvas></div><hr><div class="g3 c2" id="lr-st"></div><div class="fl">New student</div><div id="lr-in"></div><p class="note" id="lr-eq"></p><div class="tw" id="lr-tab"></div>',
+lr:'<div class="fcr ftr keep"><span class="tl">Study Hours · chart &amp; simulator</span><label class="tg"><input type="checkbox" data-t="f.lr.s"'+(TF['lr.s']?' checked':'')+'><i></i></label></div><div class="fcr ftr keep"><span class="tl">Sleep Hours · chart &amp; simulator</span><label class="tg"><input type="checkbox" data-t="f.lr.z"'+(TF['lr.z']?' checked':'')+'><i></i></label></div><div class="fl" id="lr-rh"></div><div class="cv"><canvas id="lr-r"></canvas></div><p class="note" id="lr-rn"></p><div class="fl">Actual vs predicted per student</div><div class="cv"><canvas id="lr-c"></canvas></div><hr><div class="g3 c2" id="lr-st"></div><div class="fl">New student</div><div id="lr-in"></div><p class="note" id="lr-eq"></p><div class="tw" id="lr-tab"></div>',
 lg:'<div class="fl">Actual vs predicted</div><div class="tw" id="lg-tab"></div><hr><div class="g3 c2" id="lg-st"></div><div class="fl">New student</div><div id="lg-in"></div><div id="lg-out"></div>',
 km:'<div class="fl">Number of clusters (K)</div><div class="chips" id="km-k"></div><div class="cv"><canvas id="km-c"></canvas></div><div class="fl">Elbow method</div><div class="cv"><canvas id="km-e"></canvas></div><p class="note" id="km-el"></p><div class="fl">Cluster summary</div><div class="tw" id="km-sum"></div><div class="fl">Assignments</div><div class="tw" id="km-tab"></div>',
 pc:'<div class="fl">Before: original features</div><div class="cv"><canvas id="pc-b"></canvas></div><div class="fl">After: PC1 vs PC2</div><div class="cv"><canvas id="pc-a"></canvas></div><p class="note" id="pc-cmp"></p><div class="tw" id="pc-tab"></div>'};
@@ -142,22 +142,32 @@ const theory=fit(theoryKeys);if(!theory)return'The theory dataset has constant o
 const theoryPred=d.map(r=>theory.predict(r)),mae=d.reduce((a,r,i)=>a+Math.abs(r.e-theoryPred[i]),0)/d.length,mean=d.reduce((a,r)=>a+r.e,0)/d.length,ss=d.reduce((a,r)=>a+(r.e-mean)**2,0),r2=ss>0?1-d.reduce((a,r,i)=>a+(r.e-theoryPred[i])**2,0)/ss:NaN;
 const selected=['s','z'].filter(k=>TF['lr.'+k]),sim=selected.length?fit(selected):null;
 const raw=sim?sim.predict({s:V['lr.s'],z:V['lr.z']}):NaN,predicted=Math.max(0,Math.min(100,raw));
-$('#lr-st').innerHTML=ch([['Theory dataset','Study + Sleep','always enabled'],['Theory MAE',F(mae),'avg error, points'],['Theory R²',F(r2,2),'fit quality']]);
+$('#lr-st').innerHTML=ch([['Theory MAE',F(mae),'avg error, points'],['Theory R²',F(r2,2),'fit quality'],['New student','—','simulator']]);
 $('#lr-rh').textContent='THEORY · Multiple linear regression: Study Hours + Sleep Hours → Exam Score';
-const all=[...d.map(r=>r.e),...theoryPred],lo=Math.min(...all),hi=Math.max(...all);
-chart('lr-r','scatter',{datasets:[{label:'Actual students',data:d.map(r=>({x:r.e,y:r.e,id:r.id})),backgroundColor:'#3B82F6',pointRadius:6},{label:'Theory predictions',data:d.map((r,i)=>({x:r.e,y:theoryPred[i],id:r.id})),backgroundColor:'#f8fafc',borderColor:'#3B82F6',pointRadius:5},{label:'Perfect prediction',data:[{x:lo,y:lo},{x:hi,y:hi}],showLine:true,borderColor:'#94a3b8',borderDash:[6,4],borderWidth:2,pointRadius:0}]},Object.assign(ax('Actual Exam Score','Theory Predicted Score'),{plugins:{tooltip:{callbacks:{label:c=>(c.raw.id?c.raw.id+': ':'')+F(c.raw.x)+', '+F(c.raw.y)}}}}));
-$('#lr-rn').textContent='This theory model always uses both Study Hours and Sleep Hours. The feature toggles do not change this dataset, fitted model, chart, or table.';
+LRT='THEORY · Score = '+F(theory.w[0])+' '+(theory.w[1]<0?'−':'+')+' '+F(Math.abs(theory.w[1]),2)+' × Study Hours '+(theory.w[2]<0?'−':'+')+' '+F(Math.abs(theory.w[2]),2)+' × Sleep Hours. The MAE and R² cards always use both features.';
 chart('lr-c','bar',{labels:d.map(r=>r.id),datasets:[{label:'Actual',data:d.map(r=>r.e),backgroundColor:'#3B82F666'},{label:'Theory predicted',type:'line',data:theoryPred,borderColor:'#3B82F6',backgroundColor:'#3B82F6',tension:0}]},ax('Student','Exam Score'));
 $('#lr-tab').innerHTML=T(['ID','Actual','Theory Predicted','Error'],d.map((r,i)=>[r.id,r.e,F(theoryPred[i]),F(theoryPred[i]-r.e)]));
 renderLRSimulator(d);
 }
+function renderLRChart(d,selected,sim){
+const NM={s:'Study Hours',z:'Sleep Hours'},BL='#3B82F6',sets=[];let xt='Hours',note;
+if(selected.length&&sim){
+let X;if(selected.length==2){const a=sim.w[1],b=sim.w[2];X=r=>a*r.s+b*r.z;xt='Study & Sleep combined ('+F(a,2)+' × Study + '+F(b,2)+' × Sleep)';note='Both features are on, so this is one multiple regression: each point\u2019s X is the weighted sum of its Study and Sleep hours, and the single line is Score = intercept + that sum.'}
+else{const k=selected[0];X=r=>r[k];xt=NM[k];note='One feature is on, so this is a simple linear regression of Exam Score on '+NM[k]+'.'}
+const xs=d.map(X),a=Math.min(...xs),b=Math.max(...xs);
+sets.push({label:'Actual students',data:d.map((r,i)=>({x:xs[i],y:r.e,id:r.id})),backgroundColor:BL,pointRadius:6});
+sets.push({label:'Regression line',data:[{x:a,y:sim.w[0]+(selected.length==2?a:sim.w[1]*a)},{x:b,y:sim.w[0]+(selected.length==2?b:sim.w[1]*b)}],showLine:true,borderColor:BL,borderWidth:2,pointRadius:0})}
+else note=selected.length?'This feature combination cannot be fitted with the current data.':'Turn on at least one feature to draw the chart.';
+chart('lr-r','scatter',{datasets:sets},Object.assign(ax(xt,'Exam Score'),{plugins:{legend:{labels:{boxWidth:10}},tooltip:{callbacks:{label:c=>(c.raw.id?c.raw.id+': ':'')+F(c.raw.x)+' → '+F(c.raw.y)}}}}));
+$('#lr-rn').textContent=LRT+' '+note}
 function renderLRSimulator(d){
 const selected=['s','z'].filter(k=>TF['lr.'+k]),names={s:'Study',z:'Sleep'};
 const fit=keys=>{const m=keys.length+1,ix=[...Array(m).keys()],X=d.map(r=>[1,...keys.map(k=>r[k])]),w=solve(ix.map(i=>ix.map(j=>X.reduce((a,x)=>a+x[i]*x[j],0))),ix.map(i=>X.reduce((a,x,q)=>a+x[i]*d[q].e,0)));return w?{w,predict:v=>w[0]+keys.reduce((a,k,i)=>a+w[i+1]*v[k],0)}:null};
 const sim=selected.length&&d.length>=2?fit(selected):null;
 const raw=sim?sim.predict({s:V['lr.s'],z:V['lr.z']}):NaN,predicted=Math.max(0,Math.min(100,raw));
-if(sim){$('#lr-eq').textContent='SIMULATOR · Score = '+F(sim.w[0])+selected.map((k,i)=>' '+(sim.w[i+1]<0?'−':'+')+' '+F(Math.abs(sim.w[i+1]),2)+' × '+names[k]+' Hours').join('')+'. New-student prediction is clamped to 0–100.';$('#lr-st').querySelector('.c2 .cv2').textContent=F(predicted)+' points';$('#lr-st').querySelector('.c2 .cs').textContent='new student · selected inputs';SUM.lr=F(predicted)+' points predicted (simulator)'}
-else{$('#lr-eq').textContent='SIMULATOR · Turn on at least one input feature to predict a new student. The theory results above remain available and unchanged.';$('#lr-st').querySelector('.c2 .cv2').textContent='—';$('#lr-st').querySelector('.c2 .cs').textContent='new student simulator';SUM.lr='Theory model available; simulator inputs are off'}
+if(sim){$('#lr-eq').textContent='SIMULATOR · Score = '+F(sim.w[0])+selected.map((k,i)=>' '+(sim.w[i+1]<0?'−':'+')+' '+F(Math.abs(sim.w[i+1]),2)+' × '+names[k]+' Hours').join('')+'. New-student prediction is clamped to 0–100.';const pc=$('#lr-st').children[2];if(pc){pc.querySelector('.cv2').textContent=F(predicted)+' pts';pc.querySelector('.cs').textContent='new student · selected inputs'}SUM.lr=F(predicted)+' points predicted (simulator)'}
+else{$('#lr-eq').textContent='SIMULATOR · Turn on at least one input feature to predict a new student. The theory results above remain available and unchanged.';const pc=$('#lr-st').children[2];if(pc){pc.querySelector('.cv2').textContent='—';pc.querySelector('.cs').textContent='turn on an input'}SUM.lr='Theory model available; simulator inputs are off'}
+renderLRChart(d,selected,sim)
 }
 function logi(d){if(d.length<4)return'Need at least 4 students.';const n1=d.filter(r=>r.p).length;if(!n1||n1==d.length)return'Both Failed (0) and Passed (1) students are needed to train.';
 const st=stdz(d.map(r=>[r.s,r.z]));if(!st)return'Study Hours or Sleep Hours is the same for every student, so the model cannot learn from it.';
