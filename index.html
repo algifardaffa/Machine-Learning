@@ -59,7 +59,7 @@ hr{margin:1.5rem 0;border:0;border-top:1px solid rgba(51,65,85,.6)}
 <div class="wrap"><header class="hd"><div class="br">
 <img src="icon-192.png" alt="THE ML 101 logo" width="44" height="44">
 <div style="min-width:0"><div class="bt">THE ML 101</div><div class="bs">Four Algorithms. Four Perspectives.</div></div></div>
-<div class="ha"><span id="memory-status" class="note" style="white-space:nowrap">Auto-save enabled</span><button id="mt" class="hb" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mp"><svg class="ico" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+<div class="ha"><button id="mt" class="hb" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mp"><svg class="ico" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 <div id="mp" class="mp" hidden></div></div></header>
 <main id="main"></main></div>
 <script>
@@ -67,11 +67,11 @@ const ORIG=[["A",1,5,45,0],["B",2,6,50,0],["C",2,7,55,0],["D",3,6,60,0],["E",4,7
 const $=s=>document.querySelector(s),F=(x,d=1)=>Number.isFinite(x)?x.toFixed(d):'–';
 const mk=()=>ORIG.map(r=>({id:r[0],s:r[1],z:r[2],e:r[3],p:r[4]}));
 const FLD={lr:['s','z','e'],lg:['s','z','p'],km:['s','z','e'],pc:['s','z','e']},FD={s:['Study Hours',0,12,.5,'h'],z:['Sleep Hours',0,12,.5,'h'],e:['Exam Score',0,100,1,'']};
-const P={},V={'lr.s':6,'lr.z':8,'lg.s':6,'lg.z':8,'lg.th':.5},TF={'lr.s':1,'lr.z':1},SUM={};let K=3,ACT='lr',LRT='';
+const P={},V={'lr.s':6,'lr.z':8,'lg.s':6,'lg.z':8,'lg.th':.5},TF={'lr.s':1,'lr.z':1},SUM={};let K=3,ACT='lr';
 ['lr','lg','km','pc'].forEach(k=>P[k]={rows:mk(),sel:0});
 // Automatically remember editable data and settings in this browser on this device.
 const MEMORY_KEY='the-ml-101-browser-memory-v1';
-function saveMemory(){try{const data={version:1,pages:Object.fromEntries(Object.keys(P).map(k=>[k,{rows:P[k].rows,sel:P[k].sel}])),values:V,toggles:TF,k:K,active:ACT};localStorage.setItem(MEMORY_KEY,JSON.stringify(data));const badge=document.getElementById('memory-status');if(badge)badge.textContent='Saved on this device'}catch(e){console.warn('Browser memory could not be saved:',e)}}
+function saveMemory(){try{const data={version:1,pages:Object.fromEntries(Object.keys(P).map(k=>[k,{rows:P[k].rows,sel:P[k].sel}])),values:V,toggles:TF,k:K,active:ACT};localStorage.setItem(MEMORY_KEY,JSON.stringify(data));}catch(e){console.warn('Browser memory could not be saved:',e)}}
 function restoreMemory(){try{const raw=localStorage.getItem(MEMORY_KEY);if(!raw)return false;const data=JSON.parse(raw);if(!data||data.version!==1)return false;for(const k of Object.keys(P)){const x=data.pages&&data.pages[k];if(x&&Array.isArray(x.rows)){P[k].rows=x.rows.filter(r=>r&&typeof r.id==='string'&&['s','z','e','p'].every(f=>Number.isFinite(+r[f]))).map(r=>({id:r.id.slice(0,12),s:+r.s,z:+r.z,e:+r.e,p:r.p?1:0}));P[k].sel=Math.max(0,Math.min(Math.max(0,P[k].rows.length-1),Number(x.sel)||0))}}if(data.values)Object.keys(V).forEach(k=>{if(Number.isFinite(+data.values[k]))V[k]=+data.values[k]});if(data.toggles)Object.keys(TF).forEach(k=>{if(data.toggles[k]===0||data.toggles[k]===1)TF[k]=data.toggles[k]});if(Number.isFinite(+data.k))K=Math.max(2,Math.min(6,+data.k));if(['lr','lg','km','pc','cmp'].includes(data.active))ACT=data.active;return true}catch(e){console.warn('Browser memory could not be restored:',e);return false}}
 const HAS_SAVED_MEMORY=restoreMemory();
 const PG={
@@ -143,8 +143,7 @@ const theoryPred=d.map(r=>theory.predict(r)),mae=d.reduce((a,r,i)=>a+Math.abs(r.
 const selected=['s','z'].filter(k=>TF['lr.'+k]),sim=selected.length?fit(selected):null;
 const raw=sim?sim.predict({s:V['lr.s'],z:V['lr.z']}):NaN,predicted=Math.max(0,Math.min(100,raw));
 $('#lr-st').innerHTML=ch([['Theory MAE',F(mae),'avg error, points'],['Theory R²',F(r2,2),'fit quality'],['New student','—','simulator']]);
-$('#lr-rh').textContent='THEORY · Multiple linear regression: Study Hours + Sleep Hours → Exam Score';
-LRT='THEORY · Score = '+F(theory.w[0])+' '+(theory.w[1]<0?'−':'+')+' '+F(Math.abs(theory.w[1]),2)+' × Study Hours '+(theory.w[2]<0?'−':'+')+' '+F(Math.abs(theory.w[2]),2)+' × Sleep Hours. The MAE and R² cards always use both features.';
+
 chart('lr-c','bar',{labels:d.map(r=>r.id),datasets:[{label:'Actual',data:d.map(r=>r.e),backgroundColor:'#3B82F666'},{label:'Theory predicted',type:'line',data:theoryPred,borderColor:'#3B82F6',backgroundColor:'#3B82F6',tension:0}]},ax('Student','Exam Score'));
 $('#lr-tab').innerHTML=T(['ID','Actual','Theory Predicted','Error'],d.map((r,i)=>[r.id,r.e,F(theoryPred[i]),F(theoryPred[i]-r.e)]));
 renderLRSimulator(d);
@@ -158,8 +157,11 @@ const xs=d.map(X),a=Math.min(...xs),b=Math.max(...xs);
 sets.push({label:'Actual students',data:d.map((r,i)=>({x:xs[i],y:r.e,id:r.id})),backgroundColor:BL,pointRadius:6});
 sets.push({label:'Regression line',data:[{x:a,y:sim.w[0]+(selected.length==2?a:sim.w[1]*a)},{x:b,y:sim.w[0]+(selected.length==2?b:sim.w[1]*b)}],showLine:true,borderColor:BL,borderWidth:2,pointRadius:0})}
 else note=selected.length?'This feature combination cannot be fitted with the current data.':'Turn on at least one feature to draw the chart.';
+const nm=selected.map(k=>NM[k]).join(' + ');
+$('#lr-rh').textContent=selected.length?(selected.length>1?'Multiple':'Simple')+' linear regression: '+nm+' → Exam Score':'Linear regression: no feature selected';
+const eq=sim&&selected.length?'Score = '+F(sim.w[0])+selected.map((k,i)=>' '+(sim.w[i+1]<0?'−':'+')+' '+F(Math.abs(sim.w[i+1]),2)+' × '+NM[k]).join('')+'. ':'';
 chart('lr-r','scatter',{datasets:sets},Object.assign(ax(xt,'Exam Score'),{plugins:{legend:{labels:{boxWidth:10}},tooltip:{callbacks:{label:c=>(c.raw.id?c.raw.id+': ':'')+F(c.raw.x)+' → '+F(c.raw.y)}}}}));
-$('#lr-rn').textContent=LRT+' '+note}
+$('#lr-rn').textContent=eq+note+' MAE, R² and the table below always use both features.'}
 function renderLRSimulator(d){
 const selected=['s','z'].filter(k=>TF['lr.'+k]),names={s:'Study',z:'Sleep'};
 const fit=keys=>{const m=keys.length+1,ix=[...Array(m).keys()],X=d.map(r=>[1,...keys.map(k=>r[k])]),w=solve(ix.map(i=>ix.map(j=>X.reduce((a,x)=>a+x[i]*x[j],0))),ix.map(i=>X.reduce((a,x,q)=>a+x[i]*d[q].e,0)));return w?{w,predict:v=>w[0]+keys.reduce((a,k,i)=>a+w[i+1]*v[k],0)}:null};
